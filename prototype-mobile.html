@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Museum App — 手机端原型</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #2C1810 0%, #4a2c1a 50%, #2C1810 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    padding: 20px;
+  }
+
+  /* Screen navigation */
+  .screen-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 500px;
+  }
+  .nav-btn {
+    background: rgba(255,255,255,0.15);
+    color: #FAF6F0;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: #C17F3E;
+    border-color: #C17F3E;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #1a1a1a;
+    border-radius: 50px;
+    padding: 12px;
+    box-shadow:
+      0 0 0 2px #333,
+      0 0 0 4px #555,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 20px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #1a1a1a;
+    border-radius: 0 0 18px 18px;
+    z-index: 100;
+  }
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #FAF6F0;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Screens */
+  .screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #FAF6F0;
+    border-radius: 40px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .screen.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    background: transparent;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 20px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #2C1810;
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+
+  /* App header */
+  .app-header {
+    padding: 8px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .app-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2C1810;
+    letter-spacing: 2px;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(193,127,62,0.12);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #8B5E3C;
+    transition: background 0.2s;
+  }
+  .icon-btn:hover { background: rgba(193,127,62,0.25); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    height: 80px;
+    background: #fff;
+    border-top: 1px solid rgba(44,24,16,0.08);
+    display: flex;
+    align-items: flex-start;
+    padding-top: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 20px rgba(44,24,16,0.08);
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .nav-item .nav-icon { font-size: 20px; }
+  .nav-item .nav-label { font-size: 10px; color: #8B7355; }
+  .nav-item.active .nav-label { color: #C17F3E; font-weight: 600; }
+
+  /* FAB */
+  .fab {
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C17F3E, #D4A96A);
+    border: none;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(193,127,62,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 10;
+  }
+  .fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(193,127,62,0.55); }
+
+  /* ============ SCREEN 1: Shelf ============ */
+  .shelf-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 16px 8px;
+  }
+  .shelf-subtitle {
+    font-size: 12px;
+    color: #8B7355;
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+  .shelf {
+    background: linear-gradient(180deg, #8B5E3C 0%, #7A5233 100%);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 8px 32px rgba(44,24,16,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .shelf::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(0,0,0,0.03) 40px,
+      rgba(0,0,0,0.03) 41px
+    );
+    border-radius: 12px;
+    pointer-events: none;
+  }
+  .shelf-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .shelf-row:last-child { margin-bottom: 0; }
+  /* Shelf plank between rows */
+  .shelf-plank {
+    height: 10px;
+    background: linear-gradient(180deg, #A0713F 0%, #7A5233 50%, #6B4526 100%);
+    margin: 2px -8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .shelf-plank::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+
+  .shelf-cell {
+    aspect-ratio: 1;
+    background: linear-gradient(160deg, #F5EBD8 0%, #EDD9B8 100%);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .shelf-cell:hover { transform: translateY(-2px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 6px 12px rgba(0,0,0,0.2); }
+  .shelf-cell .item-emoji { font-size: 32px; line-height: 1; }
+  .shelf-cell .item-label {
+    font-size: 9px;
+    color: #5C3D1E;
+    text-align: center;
+    margin-top: 4px;
+    font-weight: 500;
+    padding: 0 4px;
+    line-height: 1.2;
+  }
+  .shelf-cell.empty {
+    background: transparent;
+    border: 2px dashed rgba(212,169,106,0.5);
+    box-shadow: none;
+    cursor: default;
+  }
+  .shelf-cell.empty::after {
+    content: '+';
+    font-size: 20px;
+    color: rgba(212,169,106,0.5);
+  }
+  .shelf-cell .item-glow {
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
+    pointer-events: none;
+  }
+
+  /* Item color blocks */
+  .item-color {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* ============ SCREEN 2: Detail ============ */
+  .detail-header {
+    padding: 8px 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .back-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(193,127,62,0.12);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #8B5E3C;
+  }
+  .detail-title { font-size: 18px; font-weight: 700; color: #2C1810; }
+  .detail-hero {
+    margin: 0 20px 16px;
+    height: 200px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #E8C5A0 0%, #D4A96A 40%, #B8813A 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    box-shadow: 0 8px 32px rgba(44,24,16,0.2);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .detail-hero::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%);
+  }
+  .detail-scroll { flex: 1; overflow-y: auto; padding: 0 20px 16px; }
+  .detail-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 16px rgba(44,24,16,0.08);
+  }
+  .detail-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8B7355;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(44,24,16,0.06);
+    gap: 12px;
+  }
+  .detail-row:last-of-type { border-bottom: none; }
+  .detail-key { font-size: 12px; color: #8B7355; flex-shrink: 0; }
+  .detail-val { font-size: 13px; color: #2C1810; font-weight: 500; text-align: right; }
+  .detail-story {
+    margin-top: 12px;
+    padding: 12px;
+    background: #FAF6F0;
+    border-radius: 10px;
+    border-left: 3px solid #C17F3E;
+    font-size: 13px;
+    color: #2C1810;
+    line-height: 1.6;
+  }
+  .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .tag {
+    background: rgba(193,127,62,0.12);
+    color: #8B5E3C;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .edit-btn {
+    margin: 0 20px 16px;
+    background: linear-gradient(135deg, #C17F3E, #D4A96A);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    width: calc(100% - 40px);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(193,127,62,0.35);
+    flex-shrink: 0;
+  }
+
+  /* ============ SCREENS 3-6: Add flow ============ */
+  .add-header {
+    padding: 8px 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .close-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(44,24,16,0.08);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #2C1810;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .progress-bar {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .progress-step {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(44,24,16,0.1);
+    transition: background 0.3s;
+  }
+  .progress-step.done { background: #C17F3E; }
+  .progress-step.active { background: #C17F3E; }
+
+  .add-body { flex: 1; overflow-y: auto; padding: 0 20px; }
+  .add-step-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2C1810;
+    margin-bottom: 6px;
+  }
+  .add-step-sub { font-size: 13px; color: #8B7355; margin-bottom: 24px; }
+
+  /* Camera area */
+  .camera-area {
+    border: 2.5px dashed #C17F3E;
+    border-radius: 20px;
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(193,127,62,0.04);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .camera-icon { font-size: 48px; opacity: 0.6; }
+  .camera-hint { font-size: 14px; color: #8B7355; }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #C17F3E, #D4A96A);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(193,127,62,0.35);
+    margin-bottom: 10px;
+    transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-secondary {
+    width: 100%;
+    background: white;
+    color: #C17F3E;
+    border: 1.5px solid #C17F3E;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  /* AI processing */
+  .ai-process-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+  .item-preview {
+    width: 180px; height: 180px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #E8C5A0, #C17F3E);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 72px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(193,127,62,0.3);
+    position: relative;
+  }
+  .ai-status {
+    font-size: 15px;
+    color: #8B7355;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid rgba(193,127,62,0.2);
+    border-top-color: #C17F3E;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Shelf picker */
+  .shelf-mini {
+    background: linear-gradient(180deg, #8B5E3C 0%, #7A5233 100%);
+    border-radius: 12px;
+    padding: 8px;
+    margin-bottom: 20px;
+  }
+  .shelf-mini-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .shelf-mini-row:last-child { margin-bottom: 0; }
+  .mini-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    background: #F5EBD8;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .mini-cell.occupied { background: rgba(44,24,16,0.3); cursor: not-allowed; font-size: 16px; opacity: 0.5; }
+  .mini-cell.available { border-color: #52B788; background: rgba(82,183,136,0.15); }
+  .mini-cell.available:hover { background: rgba(82,183,136,0.3); transform: scale(1.05); }
+  .mini-cell.selected { border-color: #C17F3E; background: rgba(193,127,62,0.2); box-shadow: 0 0 0 3px rgba(193,127,62,0.3); }
+
+  /* Story form */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; color: #8B7355; font-weight: 600; margin-bottom: 6px; display: block; }
+  .form-input {
+    width: 100%;
+    background: white;
+    border: 1.5px solid rgba(44,24,16,0.1);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #2C1810;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .form-input:focus { border-color: #C17F3E; }
+  .form-textarea {
+    width: 100%;
+    background: white;
+    border: 1.5px solid rgba(44,24,16,0.1);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #2C1810;
+    outline: none;
+    resize: none;
+    height: 90px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .form-textarea:focus { border-color: #C17F3E; }
+  .tag-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag-option {
+    background: rgba(193,127,62,0.08);
+    color: #8B5E3C;
+    border: 1.5px solid rgba(193,127,62,0.2);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tag-option.selected { background: #C17F3E; color: white; border-color: #C17F3E; }
+  .skip-link {
+    text-align: center;
+    font-size: 13px;
+    color: #8B7355;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 8px;
+    padding-bottom: 20px;
+    display: block;
+  }
+
+  /* ============ SCREEN 7: Memory ============ */
+  .memory-date {
+    padding: 8px 20px 16px;
+    font-size: 14px;
+    color: #8B7355;
+    flex-shrink: 0;
+  }
+  .memory-hero-card {
+    margin: 0 20px 16px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 24px rgba(44,24,16,0.12);
+    flex-shrink: 0;
+  }
+  .memory-hero-img {
+    height: 200px;
+    background: linear-gradient(135deg, #FDDCAA 0%, #F0B36A 40%, #C17F3E 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    position: relative;
+  }
+  .memory-hero-img::before {
+    content: '今日藏品';
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(255,255,255,0.9);
+    color: #C17F3E;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+  .memory-hero-body { padding: 16px; }
+  .memory-item-name { font-size: 18px; font-weight: 700; color: #2C1810; margin-bottom: 6px; }
+  .memory-story { font-size: 13px; color: #5C3D1E; line-height: 1.6; margin-bottom: 8px; }
+  .memory-meta { font-size: 11px; color: #8B7355; margin-bottom: 14px; }
+  .memory-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #C17F3E, #D4A96A);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .memory-all-link {
+    text-align: center;
+    margin: 12px 20px 0;
+    font-size: 13px;
+    color: #C17F3E;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ============ SCREEN 8: Settings ============ */
+  .settings-scroll { flex: 1; overflow-y: auto; padding: 0 16px 20px; }
+  .settings-user {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(44,24,16,0.06);
+  }
+  .user-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C17F3E, #D4A96A);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 16px; font-weight: 700; color: #2C1810; }
+  .user-badge {
+    display: inline-block;
+    background: rgba(193,127,62,0.1);
+    color: #C17F3E;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 3px;
+  }
+  .settings-section { margin-bottom: 14px; }
+  .settings-section-title {
+    font-size: 11px;
+    color: #8B7355;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    padding-left: 4px;
+  }
+  .settings-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(44,24,16,0.06);
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(44,24,16,0.05);
+    gap: 10px;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-icon { font-size: 18px; width: 24px; text-align: center; }
+  .settings-row-main { flex: 1; }
+  .settings-row-label { font-size: 14px; color: #2C1810; }
+  .settings-row-sub { font-size: 11px; color: #8B7355; margin-top: 1px; }
+  .toggle {
+    width: 44px; height: 26px;
+    border-radius: 13px;
+    background: #ccc;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle.on { background: #52B788; }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: white;
+    top: 2px; left: 2px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle.on::after { transform: translateX(18px); }
+  .time-badge {
+    background: rgba(193,127,62,0.12);
+    color: #C17F3E;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-left: 6px;
+    flex-shrink: 0;
+  }
+  .chevron { font-size: 14px; color: #C4B8AA; }
+  .settings-danger { color: #E05252 !important; }
+</style>
+</head>
+<body>
+
+<div class="screen-nav">
+  <button class="nav-btn active" onclick="showScreen(1, this)">① 收藏馆</button>
+  <button class="nav-btn" onclick="showScreen(2, this)">② 物品详情</button>
+  <button class="nav-btn" onclick="showScreen(3, this)">③ 拍照</button>
+  <button class="nav-btn" onclick="showScreen(4, this)">④ AI处理</button>
+  <button class="nav-btn" onclick="showScreen(5, this)">⑤ 选位置</button>
+  <button class="nav-btn" onclick="showScreen(6, this)">⑥ 故事卡</button>
+  <button class="nav-btn" onclick="showScreen(7, this)">⑦ 今日记忆</button>
+  <button class="nav-btn" onclick="showScreen(8, this)">⑧ 设置</button>
+</div>
+
+<div class="phone-frame">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
+
+    <!-- SCREEN 1: 收藏馆主页 -->
+    <div class="screen active" id="screen-1">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <span>●●●</span>
+          <span>WiFi</span>
+          <span>🔋</span>
+        </div>
+      </div>
+      <div class="app-header">
+        <div class="app-title">Museum</div>
+        <button class="icon-btn">⚙️</button>
+      </div>
+      <div class="shelf-container">
+        <div class="shelf-subtitle">我的收藏馆 · 9 件藏品</div>
+        <div class="shelf">
+          <div class="shelf-row">
+            <div class="shelf-cell" onclick="showScreen(2, document.querySelectorAll('.nav-btn')[1])">
+              <div class="item-color" style="background:linear-gradient(135deg,#a8c5e8,#6a9fd4)">🎌</div>
+              <div class="item-label">初音未来手办</div>
+              <div class="item-glow"></div>
+            </div>
+            <div class="shelf-cell">
+              <div class="item-color" style="background:linear-gradient(135deg,#f5c97a,#e8a83a)">📚</div>
+              <div class="item-label">三体（全集）</div>
+              <div class="item-glow"></div>
+            </div>
+            <div class="shelf-cell">
+              <div class="item-color" style="background:linear-gradient(135deg,#b8e6c8,#5cb87a)">🎋</div>
+              <div class="item-label">竹制茶盘</div>
+              <div class="item-glow"></div>
+            </div>
+          </div>
+          <div class="shelf-plank"></div>
+          <div class="shelf-row">
+            <div class="shelf-cell">
+              <div class="item-color" style="background:linear-gradient(135deg,#e8c5e8,#c47ac4)">🎠</div>
+              <div class="item-label">音乐盒</div>
+              <div class="item-glow"></div>
+            </div>
+            <div class="shelf-cell">
+              <div class="item-color" style="background:linear-gradient(135deg,#ffd4a8,#e8915a)">🏺</div>
+              <div class="item-label">陶艺小碗</div>
+              <div class="item-glow"></div>
+            </div>
+            <div class="shelf-cell empty"></div>
+          </div>
+          <div class="shelf-plank"></div>
+          <div class="shelf-row">
+            <div class="shelf-cell">
+              <div class="item-color" style="background:linear-gradient(135deg,#c8e8f5,#5aaad4)">🔭</div>
+              <div class="item-label">迷你望远镜</div>
+              <div class="item-glow"></div>
+            </div>
+            <div class="shelf-cell empty"></div>
+            <div class="shelf-cell empty"></div>
+          </div>
+        </div>
+      </div>
+      <button class="fab" onclick="showScreen(3, document.querySelectorAll('.nav-btn')[2])">＋</button>
+      <div class="bottom-nav">
+        <div class="nav-item active" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">收藏馆</span>
+        </div>
+        <div class="nav-item" onclick="showScreen(7, document.querySelectorAll('.nav-btn')[6])">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">记忆</span>
+        </div>
+        <div class="nav-item" onclick="showScreen(8, document.querySelectorAll('.nav-btn')[7])">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">设置</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: 物品详情 -->
+    <div class="screen" id="screen-2">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="detail-header">
+        <button class="back-btn" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">←</button>
+        <div class="detail-title">初音未来手办</div>
+      </div>
+      <div class="detail-hero">🎌</div>
+      <div class="detail-scroll">
+        <div class="detail-card">
+          <div class="detail-card-title">档案卡</div>
+          <div class="detail-row">
+            <span class="detail-key">物品名称</span>
+            <span class="detail-val">初音未来手办</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">入库时间</span>
+            <span class="detail-val">2024-03-15</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">获得地点</span>
+            <span class="detail-val">北京 三里屯</span>
+          </div>
+          <div class="detail-story">
+            "朋友生日送的，第一眼就喜欢上了，摆在书桌上每天都很开心。那天下着小雨，逛了整整一个下午。"
+          </div>
+          <div class="tags-row">
+            <span class="tag">礼物</span>
+            <span class="tag">限定款</span>
+            <span class="tag">手办</span>
+          </div>
+        </div>
+      </div>
+      <button class="edit-btn">编辑档案</button>
+    </div>
+
+    <!-- SCREEN 3: 拍照 -->
+    <div class="screen" id="screen-3">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="add-header">
+        <button class="close-btn" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">✕</button>
+        <div class="progress-bar">
+          <div class="progress-step active"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+        </div>
+        <span style="font-size:11px;color:#8B7355;white-space:nowrap">1 / 4</span>
+      </div>
+      <div class="add-body">
+        <div class="add-step-title">拍下你的藏品</div>
+        <div class="add-step-sub">清晰拍摄物品，AI 会自动处理背景</div>
+        <div class="camera-area">
+          <div class="camera-icon">📷</div>
+          <div class="camera-hint">点击拍照，或上传图片</div>
+        </div>
+        <button class="btn-primary" onclick="showScreen(4, document.querySelectorAll('.nav-btn')[3])">📷 拍照</button>
+        <button class="btn-secondary" onclick="showScreen(4, document.querySelectorAll('.nav-btn')[3])">从相册选择</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: AI 处理 -->
+    <div class="screen" id="screen-4">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="add-header">
+        <button class="close-btn" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">✕</button>
+        <div class="progress-bar">
+          <div class="progress-step done"></div>
+          <div class="progress-step active"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+        </div>
+        <span style="font-size:11px;color:#8B7355;white-space:nowrap">2 / 4</span>
+      </div>
+      <div class="add-body" style="display:flex;flex-direction:column;align-items:center;padding-top:20px">
+        <div class="add-step-title" style="text-align:center">AI 正在处理...</div>
+        <div class="add-step-sub" style="text-align:center">稍等一下，马上就好</div>
+        <div class="ai-process-area">
+          <div class="item-preview" style="background:linear-gradient(135deg,rgba(232,197,160,0.5),rgba(193,127,62,0.5));border: 3px dashed rgba(193,127,62,0.4)">🎌</div>
+          <div class="ai-status">正在去除背景，稍等一下 ✨<br><span style="font-size:12px;opacity:0.7">AI 识别中：手办 · 动漫周边</span></div>
+          <div class="spinner"></div>
+        </div>
+        <button class="btn-primary" style="margin-top:20px" onclick="showScreen(5, document.querySelectorAll('.nav-btn')[4])">处理完成，继续 →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 5: 选位置 -->
+    <div class="screen" id="screen-5">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="add-header">
+        <button class="close-btn" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">✕</button>
+        <div class="progress-bar">
+          <div class="progress-step done"></div>
+          <div class="progress-step done"></div>
+          <div class="progress-step active"></div>
+          <div class="progress-step"></div>
+        </div>
+        <span style="font-size:11px;color:#8B7355;white-space:nowrap">3 / 4</span>
+      </div>
+      <div class="add-body">
+        <div class="add-step-title">选择摆放位置</div>
+        <div class="add-step-sub">点击绿色格子选择位置</div>
+        <div class="shelf-mini" id="shelfPicker">
+          <div class="shelf-mini-row">
+            <div class="mini-cell occupied">🎌</div>
+            <div class="mini-cell occupied">📚</div>
+            <div class="mini-cell occupied">🎋</div>
+          </div>
+          <div class="shelf-mini-row">
+            <div class="mini-cell occupied">🎠</div>
+            <div class="mini-cell occupied">🏺</div>
+            <div class="mini-cell available" onclick="selectCell(this)">＋</div>
+          </div>
+          <div class="shelf-mini-row">
+            <div class="mini-cell occupied">🔭</div>
+            <div class="mini-cell available" onclick="selectCell(this)">＋</div>
+            <div class="mini-cell available" onclick="selectCell(this)">＋</div>
+          </div>
+        </div>
+        <div style="background:rgba(82,183,136,0.1);border-radius:12px;padding:12px;margin-bottom:20px;font-size:13px;color:#52B788;text-align:center;border:1px solid rgba(82,183,136,0.2)">
+          ← 绿色边框为可选位置
+        </div>
+        <button class="btn-primary" onclick="showScreen(6, document.querySelectorAll('.nav-btn')[5])">确认位置，下一步 →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 6: 故事卡 -->
+    <div class="screen" id="screen-6">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="add-header">
+        <button class="close-btn" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">✕</button>
+        <div class="progress-bar">
+          <div class="progress-step done"></div>
+          <div class="progress-step done"></div>
+          <div class="progress-step done"></div>
+          <div class="progress-step active"></div>
+        </div>
+        <span style="font-size:11px;color:#8B7355;white-space:nowrap">4 / 4</span>
+      </div>
+      <div class="add-body">
+        <div class="add-step-title">给它留下一段故事</div>
+        <div class="add-step-sub">（可以跳过，以后再写）</div>
+        <div class="form-group">
+          <label class="form-label">物品名称</label>
+          <input class="form-input" value="初音未来手办" type="text" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">获得时间</label>
+          <input class="form-input" value="2024-03-15" type="text" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">获得地点</label>
+          <input class="form-input" placeholder="在哪里得到它的？" type="text" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">故事</label>
+          <textarea class="form-textarea" placeholder="这件东西是怎么来的？当时是什么心情？"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标签</label>
+          <div class="tag-options">
+            <div class="tag-option selected" onclick="this.classList.toggle('selected')">礼物</div>
+            <div class="tag-option" onclick="this.classList.toggle('selected')">限定款</div>
+            <div class="tag-option" onclick="this.classList.toggle('selected')">自购</div>
+            <div class="tag-option" onclick="this.classList.toggle('selected')">纪念品</div>
+            <div class="tag-option" onclick="this.classList.toggle('selected')">手办</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">完成入馆 🎉</button>
+        <a class="skip-link" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">跳过，直接入馆</a>
+      </div>
+    </div>
+
+    <!-- SCREEN 7: 今日记忆 -->
+    <div class="screen" id="screen-7">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="app-header">
+        <div class="app-title" style="font-size:18px">今日记忆</div>
+      </div>
+      <div class="memory-date">📅 2026年5月31日，星期日</div>
+      <div class="memory-hero-card">
+        <div class="memory-hero-img">🎌</div>
+        <div class="memory-hero-body">
+          <div class="memory-item-name">初音未来手办</div>
+          <div class="memory-story">"朋友生日送的，第一眼就喜欢上了，摆在书桌上每天都很开心。那天下着小雨，逛了整整一个下午。"</div>
+          <div class="memory-meta">📦 入库于 2024年3月15日 · 已陪伴 437 天</div>
+          <button class="memory-btn" onclick="showScreen(2, document.querySelectorAll('.nav-btn')[1])">去看看它 →</button>
+        </div>
+      </div>
+      <div class="memory-all-link">查看所有记忆 →</div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">收藏馆</span>
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">记忆</span>
+        </div>
+        <div class="nav-item" onclick="showScreen(8, document.querySelectorAll('.nav-btn')[7])">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">设置</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 8: 设置 -->
+    <div class="screen" id="screen-8">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="app-header">
+        <div class="app-title" style="font-size:18px">设置</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-user">
+          <div class="user-avatar">🙂</div>
+          <div>
+            <div class="user-name">我的收藏馆</div>
+            <div class="user-badge">本地模式</div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">推送通知</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-row-icon">🌅</span>
+              <div class="settings-row-main">
+                <div class="settings-row-label">今日记忆</div>
+                <div class="settings-row-sub">每天推送一件藏品记忆</div>
+              </div>
+              <span class="time-badge">09:00</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row">
+              <span class="settings-row-icon">🎂</span>
+              <div class="settings-row-main">
+                <div class="settings-row-label">周年纪念</div>
+                <div class="settings-row-sub">藏品入馆周年提醒</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row">
+              <span class="settings-row-icon">⏰</span>
+              <div class="settings-row-main">
+                <div class="settings-row-label">长期未入库提醒</div>
+                <div class="settings-row-sub">超过30天未添加藏品</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">外观</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-row-icon">🏡</span>
+              <div class="settings-row-main">
+                <div class="settings-row-label">房间风格</div>
+                <div class="settings-row-sub">温暖木质书房</div>
+              </div>
+              <span class="chevron">›</span>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">数据</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-row-icon">📤</span>
+              <div class="settings-row-main"><div class="settings-row-label">导出数据</div></div>
+              <span class="chevron">›</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-row-icon">🗑</span>
+              <div class="settings-row-main"><div class="settings-row-label settings-danger">清除数据</div></div>
+              <span class="chevron">›</span>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-row-icon">ℹ️</span>
+              <div class="settings-row-main"><div class="settings-row-label">关于 Museum</div></div>
+              <span class="chevron">›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen(1, document.querySelectorAll('.nav-btn')[0])">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">收藏馆</span>
+        </div>
+        <div class="nav-item" onclick="showScreen(7, document.querySelectorAll('.nav-btn')[6])">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">记忆</span>
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">设置</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showScreen(n, btn) {
+  // Update all screens
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const target = document.getElementById('screen-' + n);
+  target.style.display = 'flex';
+  // Trigger transition
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { target.classList.add('active'); });
+  });
+
+  // Update nav buttons
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function selectCell(el) {
+  document.querySelectorAll('#shelfPicker .mini-cell.available').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  el.textContent = '✓';
+}
+
+// Init
+document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+document.getElementById('screen-1').style.display = 'flex';
+document.getElementById('screen-1').classList.add('active');
+</script>
+</body>
+</html>
