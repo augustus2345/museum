@@ -4,119 +4,171 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Museum — Web 端原型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+:root {
+  --ink: #0F0A06;
+  --bark: #2A1508;
+  --mahogany: #4A1E0A;
+  --amber: #C9934A;
+  --gold: #E2B97E;
+  --pale-gold: #F0D9B0;
+  --cream: #FAF5EC;
+  --parchment: #F0E8D6;
+  --ash: #8A7A65;
+  --moss: #4E7A5E;
+  --sidebar-w: 230px;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-  background: #EDE7DD;
+  background: #1A0E06;
   min-height: 100vh;
-  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 24px;
+  padding: 28px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 10%, rgba(201,147,74,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(74,30,10,0.4) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 /* App shell */
 .app-shell {
   width: 100%;
   max-width: 1200px;
-  height: calc(100vh - 48px);
+  height: calc(100vh - 56px);
   min-height: 680px;
-  background: #FAF6F0;
-  border-radius: 20px;
+  background: var(--cream);
+  border-radius: 22px;
   overflow: hidden;
   display: flex;
-  box-shadow: 0 24px 80px rgba(44,24,16,0.22), 0 0 0 1px rgba(44,24,16,0.06);
+  box-shadow:
+    0 30px 80px rgba(10,5,0,0.6),
+    0 0 0 1px rgba(201,147,74,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  position: relative;
+  z-index: 1;
 }
 
 /* ======== SIDEBAR ======== */
 .sidebar {
-  width: 220px;
-  min-width: 220px;
-  background: linear-gradient(180deg, #3D2211 0%, #2C1810 100%);
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: linear-gradient(170deg, #2A1508 0%, #1A0C04 100%);
   display: flex;
   flex-direction: column;
-  padding: 0;
   position: relative;
   overflow: hidden;
 }
 .sidebar::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 60px,
-    rgba(255,255,255,0.015) 60px,
-    rgba(255,255,255,0.015) 61px
-  );
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 20%, rgba(201,147,74,0.08) 0%, transparent 65%);
   pointer-events: none;
 }
+.sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(201,147,74,0.15) 30%, rgba(201,147,74,0.08) 70%, transparent);
+}
+
 .sidebar-logo {
-  padding: 28px 24px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 30px 24px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: relative;
 }
 .sidebar-logo-text {
-  font-size: 26px;
-  font-weight: 800;
-  color: #FAF6F0;
-  letter-spacing: 4px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--pale-gold);
+  letter-spacing: 6px;
   line-height: 1;
 }
 .sidebar-logo-sub {
-  font-size: 10px;
-  color: rgba(250,246,240,0.4);
-  letter-spacing: 2px;
-  margin-top: 4px;
+  font-size: 9px;
+  color: rgba(240,217,176,0.35);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 5px;
 }
+
 .sidebar-nav {
   flex: 1;
-  padding: 16px 12px;
+  padding: 18px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 .sidebar-nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 11px 14px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
-  color: rgba(250,246,240,0.55);
-  font-size: 14px;
-  font-weight: 500;
+  color: rgba(240,217,176,0.4);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
   border: 1px solid transparent;
+  position: relative;
 }
 .sidebar-nav-item:hover {
-  background: rgba(255,255,255,0.07);
-  color: rgba(250,246,240,0.85);
+  background: rgba(255,255,255,0.05);
+  color: rgba(240,217,176,0.7);
 }
 .sidebar-nav-item.active {
-  background: rgba(193,127,62,0.2);
-  border-color: rgba(193,127,62,0.3);
-  color: #D4A96A;
+  background: rgba(201,147,74,0.12);
+  border-color: rgba(201,147,74,0.2);
+  color: var(--gold);
 }
-.sidebar-nav-item .nav-icon { font-size: 17px; width: 22px; text-align: center; }
+.sidebar-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--amber);
+  border-radius: 0 3px 3px 0;
+}
+.sidebar-nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; opacity: 0.8; }
+
 .sidebar-footer {
-  padding: 16px;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 18px;
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
-.sidebar-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.sidebar-divider {
+  font-size: 8px;
+  color: rgba(240,217,176,0.2);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
 }
+.sidebar-stats { display: flex; flex-direction: column; gap: 7px; }
 .sidebar-stat {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
 }
-.sidebar-stat-label { color: rgba(250,246,240,0.35); }
-.sidebar-stat-value { color: rgba(250,246,240,0.7); font-weight: 600; }
+.sidebar-stat-label { font-size: 10px; color: rgba(240,217,176,0.3); letter-spacing: 0.3px; }
+.sidebar-stat-value { font-size: 11px; color: rgba(240,217,176,0.6); font-weight: 500; }
 
 /* ======== MAIN CONTENT ======== */
 .main-content {
@@ -125,9 +177,9 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  background: var(--cream);
 }
 
-/* Pages */
 .page {
   display: none;
   flex: 1;
@@ -136,72 +188,74 @@ body {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-.page.active {
-  display: flex;
-  opacity: 1;
-}
+.page.active { display: flex; opacity: 1; }
 
-/* ======== PAGE 1: MAIN ======== */
+/* ======== PAGE HEADER ======== */
 .page-header {
-  padding: 24px 32px 16px;
+  padding: 22px 32px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(44,24,16,0.06);
+  border-bottom: 1px solid rgba(74,30,10,0.07);
   flex-shrink: 0;
-  background: #FAF6F0;
+  background: var(--cream);
 }
-.page-welcome { font-size: 20px; font-weight: 700; color: #2C1810; }
-.page-welcome-sub { font-size: 13px; color: #8B7355; margin-top: 2px; }
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--bark);
+  letter-spacing: 2px;
+}
+.page-sub { font-size: 11px; color: var(--ash); margin-top: 3px; letter-spacing: 0.5px; }
+
 .search-bar {
   display: flex;
   align-items: center;
   gap: 8px;
   background: white;
-  border: 1.5px solid rgba(44,24,16,0.1);
+  border: 1.5px solid rgba(74,30,10,0.08);
   border-radius: 12px;
   padding: 9px 16px;
-  width: 240px;
-  box-shadow: 0 2px 8px rgba(44,24,16,0.05);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 230px;
+  box-shadow: 0 2px 10px rgba(74,30,10,0.04);
+  transition: all 0.2s;
 }
 .search-bar:focus-within {
-  border-color: #C17F3E;
-  box-shadow: 0 2px 8px rgba(193,127,62,0.15);
+  border-color: var(--amber);
+  box-shadow: 0 2px 10px rgba(201,147,74,0.12), 0 0 0 3px rgba(201,147,74,0.07);
 }
 .search-bar input {
   border: none; outline: none;
-  font-size: 14px; color: #2C1810;
+  font-size: 13px; color: var(--bark);
   background: transparent;
   width: 100%;
-  font-family: inherit;
+  font-family: 'Noto Sans SC', sans-serif;
 }
 .search-bar input::placeholder { color: #C4B8AA; }
 
 .page-body { flex: 1; overflow-y: auto; padding: 24px 32px 32px; }
 
-/* Web shelf */
+/* ======== SHELF ======== */
 .web-shelf-wrap {
-  background: linear-gradient(180deg, #5C3D1E 0%, #4A2E16 100%);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 8px 40px rgba(44,24,16,0.22), inset 0 1px 0 rgba(255,255,255,0.08);
+  background: linear-gradient(170deg, #3D2010 0%, #2A1508 60%, #200F05 100%);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 12px 50px rgba(10,5,0,0.35), inset 0 1px 0 rgba(255,200,100,0.07);
   position: relative;
   overflow: hidden;
   margin-bottom: 24px;
 }
-.web-shelf-wrap::before {
+.web-shelf-wrap::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 80px,
-    rgba(0,0,0,0.02) 80px,
-    rgba(0,0,0,0.02) 82px
+    90deg, transparent, transparent 80px,
+    rgba(255,255,255,0.008) 80px, rgba(255,255,255,0.008) 82px
   );
   pointer-events: none;
+  border-radius: 18px;
 }
 .web-shelf-row {
   display: grid;
@@ -212,21 +266,21 @@ body {
 .web-shelf-row:last-child { margin-bottom: 0; }
 .web-plank {
   height: 12px;
-  background: linear-gradient(180deg, #9A7040 0%, #7A5530 50%, #6B4520 100%);
-  margin: 2px -12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+  background: linear-gradient(180deg, #8A5A28 0%, #6A3E18 40%, #5A3010 100%);
+  margin: 2px -14px;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.45);
   position: relative;
 }
 .web-plank::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.12) 50%, transparent 95%);
+  background: linear-gradient(90deg, transparent 5%, rgba(255,200,100,0.12) 50%, transparent 95%);
 }
 .web-shelf-cell {
   aspect-ratio: 1;
-  background: linear-gradient(160deg, #F8EEE0 0%, #EDD9B8 100%);
-  border-radius: 10px;
+  background: linear-gradient(150deg, #F7EEE0 0%, #ECD8B2 100%);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -235,135 +289,168 @@ body {
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.08), 0 2px 5px rgba(0,0,0,0.15);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.06), 0 3px 8px rgba(0,0,0,0.2);
   padding: 8px 4px;
 }
 .web-shelf-cell:hover {
-  transform: translateY(-4px);
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.08), 0 8px 20px rgba(44,24,16,0.25);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.06), 0 12px 25px rgba(10,5,0,0.35);
 }
-.web-shelf-cell .item-emoji-big { font-size: 40px; line-height: 1; }
+.web-shelf-cell .item-emoji-big { font-size: 38px; line-height: 1; }
 .web-shelf-cell .item-name {
-  font-size: 10px;
-  color: #5C3D1E;
+  font-size: 9px;
+  color: #4A2A10;
   text-align: center;
-  margin-top: 6px;
+  margin-top: 7px;
   font-weight: 500;
-  line-height: 1.3;
+  line-height: 1.4;
   padding: 0 4px;
+  letter-spacing: 0.2px;
 }
 .web-shelf-cell.empty {
   background: transparent;
-  border: 2px dashed rgba(212,169,106,0.4);
+  border: 1.5px dashed rgba(201,147,74,0.25);
   box-shadow: none;
 }
 .web-shelf-cell.empty::after {
   content: '+';
-  font-size: 24px;
-  color: rgba(212,169,106,0.45);
+  font-size: 22px;
+  color: rgba(201,147,74,0.25);
+  font-weight: 300;
 }
 .web-shelf-cell .cell-shine {
   position: absolute;
   top: 0; left: 0; right: 0; height: 45%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+  background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 100%);
   pointer-events: none;
 }
 .item-block {
-  width: 52px; height: 52px;
-  border-radius: 10px;
+  width: 50px; height: 50px;
+  border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 30px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+  font-size: 28px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-/* Stats */
+/* ======== STATS ======== */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 .stat-card {
   background: white;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 16px 20px;
-  box-shadow: 0 2px 12px rgba(44,24,16,0.07);
+  box-shadow: 0 2px 14px rgba(74,30,10,0.06);
+  border: 1px solid rgba(74,30,10,0.04);
   display: flex;
   align-items: center;
-  gap: 12px;
-  transition: transform 0.2s;
+  gap: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
-.stat-card:hover { transform: translateY(-2px); }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(74,30,10,0.1); }
 .stat-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: rgba(193,127,62,0.1);
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  background: var(--parchment);
+  border: 1px solid rgba(74,30,10,0.07);
   display: flex; align-items: center; justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
 }
-.stat-num { font-size: 24px; font-weight: 800; color: #2C1810; line-height: 1; }
-.stat-label { font-size: 12px; color: #8B7355; margin-top: 2px; }
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--bark);
+  line-height: 1;
+}
+.stat-label { font-size: 11px; color: var(--ash); margin-top: 3px; letter-spacing: 0.3px; }
 
 /* ======== PAGE 2: MEMORY ======== */
 .memory-page-body { flex: 1; overflow-y: auto; padding: 24px 32px 32px; }
 .memory-today-card {
-  background: linear-gradient(135deg, #F5E8D2 0%, #EDD4A8 100%);
-  border-radius: 20px;
-  padding: 24px;
+  background: linear-gradient(135deg, #2A1508 0%, #4A2810 40%, #7A4818 100%);
+  border-radius: 22px;
+  padding: 28px;
   display: flex;
-  gap: 24px;
+  gap: 28px;
   align-items: center;
   margin-bottom: 32px;
-  box-shadow: 0 4px 24px rgba(193,127,62,0.15);
+  box-shadow: 0 8px 32px rgba(10,5,0,0.25);
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(193,127,62,0.2);
+  border: 1px solid rgba(201,147,74,0.15);
 }
 .memory-today-card::before {
-  content: '今日记忆';
+  content: '';
   position: absolute;
-  top: 16px; right: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #C17F3E;
-  letter-spacing: 2px;
-  opacity: 0.6;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 30%, rgba(201,147,74,0.15), transparent 60%);
+  pointer-events: none;
+}
+.memory-today-badge {
+  position: absolute;
+  top: 18px; right: 20px;
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(240,217,176,0.5);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
 }
 .memory-today-img {
-  width: 120px; height: 120px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #E8C5A0, #C17F3E);
+  width: 110px; height: 110px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,200,100,0.15);
   display: flex; align-items: center; justify-content: center;
-  font-size: 60px;
+  font-size: 52px;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(44,24,16,0.15);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 .memory-today-content { flex: 1; }
-.memory-today-name { font-size: 22px; font-weight: 700; color: #2C1810; margin-bottom: 8px; }
-.memory-today-story { font-size: 14px; color: #5C3D1E; line-height: 1.7; margin-bottom: 12px; }
-.memory-today-meta { font-size: 12px; color: #8B7355; }
+.memory-today-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--pale-gold);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.memory-today-story {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(240,217,176,0.65);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.memory-today-meta { font-size: 11px; color: rgba(240,217,176,0.35); letter-spacing: 0.5px; }
 .btn-warm {
   display: inline-block;
-  background: linear-gradient(135deg, #C17F3E, #D4A96A);
-  color: white;
-  border: none;
+  background: rgba(201,147,74,0.2);
+  border: 1px solid rgba(201,147,74,0.35);
+  color: var(--gold);
   border-radius: 10px;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 3px 12px rgba(193,127,62,0.35);
-  transition: transform 0.15s;
-  margin-top: 10px;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
 }
-.btn-warm:hover { transform: translateY(-1px); }
+.btn-warm:hover { background: rgba(201,147,74,0.3); }
 
 .timeline-section { margin-bottom: 28px; }
 .timeline-month {
-  font-size: 13px;
-  font-weight: 700;
-  color: #8B7355;
-  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ash);
+  letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 12px;
   display: flex;
@@ -374,215 +461,317 @@ body {
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(44,24,16,0.08);
+  background: rgba(74,30,10,0.08);
 }
-.timeline-items { display: flex; flex-direction: column; gap: 10px; }
+.timeline-items { display: flex; flex-direction: column; gap: 8px; }
 .timeline-item {
   background: white;
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 14px 18px;
   display: flex;
   gap: 14px;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(44,24,16,0.06);
-  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 10px rgba(74,30,10,0.05);
+  border: 1px solid rgba(74,30,10,0.04);
+  transition: all 0.2s;
   cursor: pointer;
 }
 .timeline-item:hover {
   transform: translateX(4px);
-  box-shadow: 0 4px 18px rgba(44,24,16,0.1);
+  box-shadow: 0 4px 18px rgba(74,30,10,0.1);
+  border-color: rgba(201,147,74,0.15);
 }
 .tl-img {
-  width: 56px; height: 56px;
-  border-radius: 10px;
+  width: 52px; height: 52px;
+  border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
+  font-size: 26px;
   flex-shrink: 0;
 }
-.tl-name { font-size: 15px; font-weight: 600; color: #2C1810; margin-bottom: 3px; }
-.tl-story { font-size: 12px; color: #8B7355; line-height: 1.5; }
-.tl-date { font-size: 11px; color: #C4B8AA; white-space: nowrap; margin-left: auto; padding-left: 12px; }
+.tl-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--bark);
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+.tl-story { font-size: 11px; color: var(--ash); line-height: 1.5; }
+.tl-date { font-size: 10px; color: #C4B8AA; white-space: nowrap; margin-left: auto; padding-left: 14px; letter-spacing: 0.5px; }
 
 /* ======== PAGE 3: ADD ======== */
 .add-page-body { flex: 1; overflow-y: auto; padding: 24px 32px 32px; }
 .add-steps-bar {
   display: flex;
-  gap: 0;
   margin-bottom: 28px;
   background: white;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(44,24,16,0.06);
+  box-shadow: 0 2px 10px rgba(74,30,10,0.06);
+  border: 1px solid rgba(74,30,10,0.05);
 }
 .add-step-tab {
   flex: 1;
-  padding: 12px 8px;
+  padding: 14px 8px;
   text-align: center;
-  font-size: 12px;
-  color: #8B7355;
+  font-size: 11px;
+  color: var(--ash);
   cursor: pointer;
-  border-right: 1px solid rgba(44,24,16,0.06);
+  border-right: 1px solid rgba(74,30,10,0.06);
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
+  letter-spacing: 0.3px;
 }
 .add-step-tab:last-child { border-right: none; }
 .add-step-tab .step-num {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   border-radius: 50%;
-  background: rgba(44,24,16,0.08);
-  font-size: 11px;
+  background: rgba(74,30,10,0.06);
+  font-size: 10px;
   display: flex; align-items: center; justify-content: center;
   font-weight: 700;
-  color: #8B7355;
+  color: var(--ash);
   transition: all 0.2s;
+  font-family: 'Cormorant Garamond', serif;
 }
-.add-step-tab.done .step-num { background: #52B788; color: white; }
-.add-step-tab.active .step-num { background: #C17F3E; color: white; }
-.add-step-tab.active { color: #C17F3E; background: rgba(193,127,62,0.04); }
+.add-step-tab.done .step-num { background: var(--moss); color: white; }
+.add-step-tab.active .step-num { background: var(--amber); color: white; }
+.add-step-tab.active { color: var(--amber); background: rgba(201,147,74,0.03); }
 
 .add-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 22px;
 }
-.add-col-left, .add-col-right {
+.add-col {
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 2px 12px rgba(44,24,16,0.06);
+  box-shadow: 0 2px 14px rgba(74,30,10,0.06);
+  border: 1px solid rgba(74,30,10,0.05);
 }
-.add-col-title { font-size: 16px; font-weight: 700; color: #2C1810; margin-bottom: 16px; }
+.add-col-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--bark);
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+}
 .drop-zone {
-  border: 2px dashed #C17F3E;
+  border: 2px dashed rgba(201,147,74,0.3);
   border-radius: 16px;
-  height: 280px;
+  height: 260px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  background: rgba(193,127,62,0.03);
+  gap: 10px;
+  background: rgba(201,147,74,0.02);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
 }
-.drop-zone:hover { background: rgba(193,127,62,0.07); }
-.drop-icon { font-size: 48px; opacity: 0.5; }
-.drop-text { font-size: 15px; color: #8B7355; font-weight: 500; }
-.drop-sub { font-size: 12px; color: #C4B8AA; }
+.drop-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(201,147,74,0.04), transparent 70%);
+}
+.drop-zone:hover { border-color: var(--amber); background: rgba(201,147,74,0.05); }
+.drop-icon { font-size: 44px; opacity: 0.3; }
+.drop-text { font-size: 14px; color: var(--ash); font-weight: 400; }
+.drop-sub { font-size: 11px; color: #C4B8AA; letter-spacing: 0.3px; }
 
-.web-form-group { margin-bottom: 16px; }
-.web-form-label { font-size: 12px; color: #8B7355; font-weight: 600; margin-bottom: 6px; display: block; letter-spacing: 0.5px; }
+.ai-result {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--parchment);
+  border-radius: 12px;
+  border: 1px solid rgba(78,122,94,0.2);
+}
+.ai-result-label { font-size: 10px; color: var(--moss); font-weight: 600; margin-bottom: 4px; letter-spacing: 1.5px; text-transform: uppercase; }
+.ai-result-text { font-size: 12px; color: #5A3A1A; }
+.ai-result-sub { font-size: 11px; color: var(--ash); margin-top: 2px; }
+
+.web-form-group { margin-bottom: 14px; }
+.web-form-label {
+  font-size: 9px;
+  color: var(--ash);
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 .web-form-input {
   width: 100%;
-  background: #FAF6F0;
-  border: 1.5px solid rgba(44,24,16,0.08);
+  background: var(--cream);
+  border: 1.5px solid rgba(74,30,10,0.07);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 14px;
-  color: #2C1810;
+  font-size: 13px;
+  color: var(--bark);
   outline: none;
-  font-family: inherit;
-  transition: border-color 0.2s, background 0.2s;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
 }
-.web-form-input:focus { border-color: #C17F3E; background: white; }
+.web-form-input:focus { border-color: var(--amber); background: white; box-shadow: 0 0 0 3px rgba(201,147,74,0.08); }
 .web-form-textarea {
   width: 100%;
-  background: #FAF6F0;
-  border: 1.5px solid rgba(44,24,16,0.08);
+  background: var(--cream);
+  border: 1.5px solid rgba(74,30,10,0.07);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 14px;
-  color: #2C1810;
+  font-size: 13px;
+  color: var(--bark);
   outline: none;
   resize: none;
-  height: 100px;
-  font-family: inherit;
-  transition: border-color 0.2s, background 0.2s;
+  height: 96px;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+  line-height: 1.6;
 }
-.web-form-textarea:focus { border-color: #C17F3E; background: white; }
-.web-tag-options { display: flex; gap: 6px; flex-wrap: wrap; }
+.web-form-textarea:focus { border-color: var(--amber); background: white; }
+.web-tag-options { display: flex; gap: 5px; flex-wrap: wrap; }
 .web-tag-option {
-  background: rgba(193,127,62,0.08);
-  color: #8B5E3C;
-  border: 1.5px solid rgba(193,127,62,0.2);
-  font-size: 12px;
-  padding: 5px 12px;
+  background: rgba(201,147,74,0.07);
+  color: #7A4A1A;
+  border: 1.5px solid rgba(201,147,74,0.18);
+  font-size: 11px;
+  padding: 4px 11px;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
+  letter-spacing: 0.3px;
 }
-.web-tag-option.selected { background: #C17F3E; color: white; border-color: #C17F3E; }
-.add-action-row { margin-top: 20px; display: flex; gap: 10px; }
+.web-tag-option.selected { background: var(--amber); color: white; border-color: var(--amber); }
+.add-action-row { margin-top: 22px; display: flex; gap: 10px; }
 .web-btn-primary {
   flex: 1;
-  background: linear-gradient(135deg, #C17F3E, #D4A96A);
-  color: white;
+  background: linear-gradient(135deg, var(--mahogany), #7A3C1A);
+  color: var(--pale-gold);
   border: none;
   border-radius: 12px;
   padding: 13px;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 3px 14px rgba(193,127,62,0.35);
-  transition: transform 0.15s;
-  font-family: inherit;
+  box-shadow: 0 4px 16px rgba(74,30,10,0.25);
+  transition: all 0.2s;
+  font-family: 'Noto Sans SC', sans-serif;
+  letter-spacing: 0.8px;
 }
-.web-btn-primary:hover { transform: translateY(-1px); }
+.web-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(74,30,10,0.3); }
 .web-btn-secondary {
-  background: white;
-  color: #8B7355;
-  border: 1.5px solid rgba(44,24,16,0.12);
+  background: transparent;
+  color: var(--ash);
+  border: 1.5px solid rgba(74,30,10,0.12);
   border-radius: 12px;
   padding: 13px 20px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  font-family: inherit;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
 }
+.web-btn-secondary:hover { border-color: var(--amber); color: var(--amber); }
 
 /* ======== PAGE 4: SETTINGS ======== */
 .settings-page-body { flex: 1; overflow-y: auto; padding: 24px 32px 32px; }
-.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.settings-user-panel {
+  background: linear-gradient(135deg, #2A1508 0%, #4A2810 60%, #7A4818 100%);
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 8px 30px rgba(10,5,0,0.2);
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(201,147,74,0.12);
+}
+.settings-user-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(201,147,74,0.12), transparent 65%);
+  pointer-events: none;
+}
+.web-user-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(255,200,100,0.1);
+  border: 1px solid rgba(255,200,100,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+}
+.web-user-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--pale-gold);
+  letter-spacing: 2px;
+}
+.web-user-meta { font-size: 11px; color: rgba(240,217,176,0.45); margin-top: 3px; letter-spacing: 0.5px; }
+.web-user-badge {
+  display: inline-block;
+  background: rgba(255,200,100,0.1);
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 500;
+  padding: 2px 9px;
+  border-radius: 10px;
+  margin-top: 6px;
+  letter-spacing: 1.5px;
+  border: 1px solid rgba(255,200,100,0.18);
+}
+
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .settings-panel {
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(44,24,16,0.06);
+  box-shadow: 0 2px 14px rgba(74,30,10,0.06);
+  border: 1px solid rgba(74,30,10,0.05);
 }
 .settings-panel-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #8B7355;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--ash);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2.5px;
   margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(44,24,16,0.07);
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(74,30,10,0.06);
 }
 .web-settings-row {
   display: flex;
   align-items: center;
   padding: 11px 0;
-  border-bottom: 1px solid rgba(44,24,16,0.05);
+  border-bottom: 1px solid rgba(74,30,10,0.04);
   gap: 10px;
 }
 .web-settings-row:last-child { border-bottom: none; padding-bottom: 0; }
-.ws-icon { font-size: 18px; width: 26px; text-align: center; flex-shrink: 0; }
+.ws-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; opacity: 0.7; }
 .ws-main { flex: 1; }
-.ws-label { font-size: 14px; color: #2C1810; }
-.ws-sub { font-size: 11px; color: #8B7355; margin-top: 1px; }
+.ws-label { font-size: 13px; color: var(--bark); letter-spacing: 0.3px; }
+.ws-sub { font-size: 10px; color: var(--ash); margin-top: 1.5px; letter-spacing: 0.2px; }
 .web-toggle {
-  width: 44px; height: 24px;
+  width: 42px; height: 24px;
   border-radius: 12px;
-  background: #ccc;
+  background: #ddd;
   position: relative;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.25s;
   flex-shrink: 0;
 }
-.web-toggle.on { background: #52B788; }
+.web-toggle.on { background: var(--moss); }
 .web-toggle::after {
   content: '';
   position: absolute;
@@ -590,53 +779,23 @@ body {
   border-radius: 50%;
   background: white;
   top: 2px; left: 2px;
-  transition: transform 0.2s;
+  transition: transform 0.25s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
-.web-toggle.on::after { transform: translateX(20px); }
+.web-toggle.on::after { transform: translateX(18px); }
 .ws-time {
-  background: rgba(193,127,62,0.1);
-  color: #C17F3E;
-  font-size: 12px;
+  background: rgba(201,147,74,0.1);
+  color: var(--amber);
+  font-size: 11px;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 6px;
   margin-right: 6px;
+  letter-spacing: 0.3px;
 }
-.ws-chevron { font-size: 14px; color: #C4B8AA; }
-.ws-danger { color: #E05252 !important; }
-.settings-user-panel {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  box-shadow: 0 2px 12px rgba(44,24,16,0.06);
-  grid-column: 1 / -1;
-}
-.web-user-avatar {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #C17F3E, #D4A96A);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 30px;
-  flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(193,127,62,0.3);
-}
-.web-user-name { font-size: 20px; font-weight: 700; color: #2C1810; }
-.web-user-meta { font-size: 13px; color: #8B7355; margin-top: 3px; }
-.web-user-badge {
-  display: inline-block;
-  background: rgba(193,127,62,0.12);
-  color: #C17F3E;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 10px;
-  margin-top: 6px;
-}
-.ws-value { font-size: 13px; color: #2C1810; white-space: nowrap; }
+.ws-chevron { font-size: 13px; color: #C4B8AA; }
+.ws-danger { color: #C84040 !important; }
+.ws-value { font-size: 12px; color: var(--ash); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -650,23 +809,24 @@ body {
     </div>
     <nav class="sidebar-nav">
       <div class="sidebar-nav-item active" id="nav-1" onclick="showPage(1)">
-        <span class="nav-icon">🏠</span>
+        <span class="nav-icon">⌂</span>
         <span>我的收藏馆</span>
       </div>
       <div class="sidebar-nav-item" id="nav-2" onclick="showPage(2)">
-        <span class="nav-icon">📅</span>
+        <span class="nav-icon">◷</span>
         <span>记忆时光</span>
       </div>
       <div class="sidebar-nav-item" id="nav-3" onclick="showPage(3)">
-        <span class="nav-icon">➕</span>
+        <span class="nav-icon">＋</span>
         <span>添加藏品</span>
       </div>
       <div class="sidebar-nav-item" id="nav-4" onclick="showPage(4)">
-        <span class="nav-icon">⚙️</span>
+        <span class="nav-icon">⊙</span>
         <span>设置</span>
       </div>
     </nav>
     <div class="sidebar-footer">
+      <div class="sidebar-divider">馆藏概览</div>
       <div class="sidebar-stats">
         <div class="sidebar-stat">
           <span class="sidebar-stat-label">藏品总数</span>
@@ -691,11 +851,11 @@ body {
     <div class="page active" id="page-1">
       <div class="page-header">
         <div>
-          <div class="page-welcome">你好，今天想看看哪件宝贝？</div>
-          <div class="page-welcome-sub">2026年5月31日 · 共 12 件藏品在等你</div>
+          <div class="page-title">你好，今天想看看哪件宝贝？</div>
+          <div class="page-sub">2026年6月1日 · 共 12 件藏品在等你</div>
         </div>
         <div class="search-bar">
-          <span>🔍</span>
+          <span style="font-size:13px;color:var(--ash)">⌕</span>
           <input type="text" placeholder="搜索藏品…" />
         </div>
       </div>
@@ -703,22 +863,22 @@ body {
         <div class="web-shelf-wrap">
           <div class="web-shelf-row">
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#a8c5e8,#6a9fd4)">🎌</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#a8c5e8,#5a8fc4)">🎌</div>
               <div class="item-name">初音未来手办</div>
               <div class="cell-shine"></div>
             </div>
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#f5c97a,#e8a83a)">📚</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#f5c97a,#d4921a)">📚</div>
               <div class="item-name">三体（全集）</div>
               <div class="cell-shine"></div>
             </div>
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#b8e6c8,#5cb87a)">🎋</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#b8e0c0,#4a9a5a)">🎋</div>
               <div class="item-name">竹制茶盘</div>
               <div class="cell-shine"></div>
             </div>
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#e8c5e8,#c47ac4)">🎠</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#e8c0e8,#a060a0)">🎠</div>
               <div class="item-name">旋转音乐盒</div>
               <div class="cell-shine"></div>
             </div>
@@ -726,17 +886,17 @@ body {
           <div class="web-plank"></div>
           <div class="web-shelf-row">
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#ffd4a8,#e8915a)">🏺</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#f5d0a0,#d0784a)">🏺</div>
               <div class="item-name">陶艺小碗</div>
               <div class="cell-shine"></div>
             </div>
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#c8e8f5,#5aaad4)">🔭</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#c0dced,#4a92bc)">🔭</div>
               <div class="item-name">迷你望远镜</div>
               <div class="cell-shine"></div>
             </div>
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#f5d4c8,#d4785a)">🗿</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#f5d0c0,#c0684a)">🗿</div>
               <div class="item-name">石膏小雕塑</div>
               <div class="cell-shine"></div>
             </div>
@@ -745,7 +905,7 @@ body {
           <div class="web-plank"></div>
           <div class="web-shelf-row">
             <div class="web-shelf-cell">
-              <div class="item-block" style="background:linear-gradient(135deg,#d4c8f5,#8a7ad4)">🎴</div>
+              <div class="item-block" style="background:linear-gradient(135deg,#d0c8f5,#7a70c4)">🎴</div>
               <div class="item-name">旅行纪念卡</div>
               <div class="cell-shine"></div>
             </div>
@@ -756,21 +916,21 @@ body {
         </div>
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-icon">📦</div>
+            <div class="stat-icon">◻</div>
             <div>
               <div class="stat-num">12</div>
               <div class="stat-label">件藏品</div>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">🗓</div>
+            <div class="stat-icon">◷</div>
             <div>
               <div class="stat-num">8</div>
               <div class="stat-label">个月入馆历程</div>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">✍️</div>
+            <div class="stat-icon">✍</div>
             <div>
               <div class="stat-num">5</div>
               <div class="stat-label">段故事待续写</div>
@@ -784,27 +944,26 @@ body {
     <div class="page" id="page-2">
       <div class="page-header">
         <div>
-          <div class="page-welcome">记忆时光</div>
-          <div class="page-welcome-sub">每件藏品都有自己的故事</div>
+          <div class="page-title">记忆时光</div>
+          <div class="page-sub">每件藏品都有自己的故事</div>
         </div>
       </div>
       <div class="memory-page-body">
-        <!-- Today highlight -->
         <div class="memory-today-card">
+          <div class="memory-today-badge">今日记忆</div>
           <div class="memory-today-img">🎌</div>
           <div class="memory-today-content">
             <div class="memory-today-name">初音未来手办</div>
             <div class="memory-today-story">"朋友生日送的，第一眼就喜欢上了，摆在书桌上每天都很开心。那天下着小雨，我们逛了整整一个下午的三里屯，最后在一家小店发现了它。"</div>
-            <div class="memory-today-meta">📦 入库于 2024年3月15日 · 已陪伴 437 天</div>
+            <div class="memory-today-meta">入库于 2024年3月15日 · 已陪伴 437 天</div>
             <button class="btn-warm">去看看它 →</button>
           </div>
         </div>
-        <!-- Timeline -->
         <div class="timeline-section">
           <div class="timeline-month">2024年3月</div>
           <div class="timeline-items">
             <div class="timeline-item">
-              <div class="tl-img" style="background:linear-gradient(135deg,#a8c5e8,#6a9fd4)">🎌</div>
+              <div class="tl-img" style="background:linear-gradient(135deg,#a8c5e8,#5a8fc4)">🎌</div>
               <div>
                 <div class="tl-name">初音未来手办</div>
                 <div class="tl-story">朋友生日送的，第一眼就喜欢上了…</div>
@@ -812,7 +971,7 @@ body {
               <div class="tl-date">03-15</div>
             </div>
             <div class="timeline-item">
-              <div class="tl-img" style="background:linear-gradient(135deg,#b8e6c8,#5cb87a)">🎋</div>
+              <div class="tl-img" style="background:linear-gradient(135deg,#b8e0c0,#4a9a5a)">🎋</div>
               <div>
                 <div class="tl-name">竹制茶盘</div>
                 <div class="tl-story">在杭州龙井茶园旁的小店淘到的，摸上去特别舒服…</div>
@@ -825,7 +984,7 @@ body {
           <div class="timeline-month">2024年1月</div>
           <div class="timeline-items">
             <div class="timeline-item">
-              <div class="tl-img" style="background:linear-gradient(135deg,#f5c97a,#e8a83a)">📚</div>
+              <div class="tl-img" style="background:linear-gradient(135deg,#f5c97a,#d4921a)">📚</div>
               <div>
                 <div class="tl-name">三体（全集）</div>
                 <div class="tl-story">连续三个周末读完，深夜读到凌晨，思绪久久不能平静…</div>
@@ -833,7 +992,7 @@ body {
               <div class="tl-date">01-08</div>
             </div>
             <div class="timeline-item">
-              <div class="tl-img" style="background:linear-gradient(135deg,#e8c5e8,#c47ac4)">🎠</div>
+              <div class="tl-img" style="background:linear-gradient(135deg,#e8c0e8,#a060a0)">🎠</div>
               <div>
                 <div class="tl-name">旋转音乐盒</div>
                 <div class="tl-story">外婆留给我的，每次打开都会想起小时候的味道…</div>
@@ -841,7 +1000,7 @@ body {
               <div class="tl-date">01-20</div>
             </div>
             <div class="timeline-item">
-              <div class="tl-img" style="background:linear-gradient(135deg,#ffd4a8,#e8915a)">🏺</div>
+              <div class="tl-img" style="background:linear-gradient(135deg,#f5d0a0,#d0784a)">🏺</div>
               <div>
                 <div class="tl-name">陶艺小碗</div>
                 <div class="tl-story">参加陶艺课亲手做的第一件作品，歪歪扭扭却很可爱…</div>
@@ -857,8 +1016,8 @@ body {
     <div class="page" id="page-3">
       <div class="page-header">
         <div>
-          <div class="page-welcome">添加藏品</div>
-          <div class="page-welcome-sub">让你的物品走进收藏馆</div>
+          <div class="page-title">添加藏品</div>
+          <div class="page-sub">让你的物品走进收藏馆</div>
         </div>
       </div>
       <div class="add-page-body">
@@ -881,21 +1040,21 @@ body {
           </div>
         </div>
         <div class="add-two-col">
-          <div class="add-col-left">
-            <div class="add-col-title">📷 物品图片</div>
+          <div class="add-col">
+            <div class="add-col-title">物品图片</div>
             <div class="drop-zone">
-              <div class="drop-icon">🖼️</div>
+              <div class="drop-icon">◻</div>
               <div class="drop-text">拖拽图片到这里</div>
               <div class="drop-sub">或点击选择图片 · 支持 JPG / PNG</div>
             </div>
-            <div style="margin-top:16px;padding:14px;background:#FAF6F0;border-radius:12px;border:1px dashed rgba(82,183,136,0.4)">
-              <div style="font-size:12px;color:#52B788;font-weight:600;margin-bottom:4px">✨ AI 识别结果</div>
-              <div style="font-size:13px;color:#5C3D1E">类别：手办 · 动漫周边</div>
-              <div style="font-size:12px;color:#8B7355;margin-top:2px">已自动去除背景，可继续填写信息</div>
+            <div class="ai-result">
+              <div class="ai-result-label">AI 识别结果</div>
+              <div class="ai-result-text">类别：手办 · 动漫周边</div>
+              <div class="ai-result-sub">已自动去除背景，可继续填写信息</div>
             </div>
           </div>
-          <div class="add-col-right">
-            <div class="add-col-title">✍️ 故事档案</div>
+          <div class="add-col">
+            <div class="add-col-title">故事档案</div>
             <div class="web-form-group">
               <label class="web-form-label">物品名称</label>
               <input class="web-form-input" value="初音未来手办" type="text" />
@@ -926,7 +1085,7 @@ body {
               </div>
             </div>
             <div class="add-action-row">
-              <button class="web-btn-primary" onclick="showPage(1)">完成入馆 🎉</button>
+              <button class="web-btn-primary" onclick="showPage(1)">完成入馆</button>
               <button class="web-btn-secondary" onclick="showPage(1)">跳过</button>
             </div>
           </div>
@@ -938,24 +1097,24 @@ body {
     <div class="page" id="page-4">
       <div class="page-header">
         <div>
-          <div class="page-welcome">设置</div>
-          <div class="page-welcome-sub">管理你的收藏馆</div>
+          <div class="page-title">设置</div>
+          <div class="page-sub">管理你的收藏馆</div>
         </div>
       </div>
       <div class="settings-page-body">
-        <div class="settings-grid">
-          <div class="settings-user-panel">
-            <div class="web-user-avatar">🙂</div>
-            <div>
-              <div class="web-user-name">我的收藏馆</div>
-              <div class="web-user-meta">12 件藏品 · 入馆 8 个月</div>
-              <div class="web-user-badge">本地模式</div>
-            </div>
+        <div class="settings-user-panel">
+          <div class="web-user-avatar">◎</div>
+          <div>
+            <div class="web-user-name">我的收藏馆</div>
+            <div class="web-user-meta">12 件藏品 · 入馆 8 个月</div>
+            <div class="web-user-badge">本地模式</div>
           </div>
+        </div>
+        <div class="settings-grid">
           <div class="settings-panel">
             <div class="settings-panel-title">推送通知</div>
             <div class="web-settings-row">
-              <span class="ws-icon">🌅</span>
+              <span class="ws-icon">☀</span>
               <div class="ws-main">
                 <div class="ws-label">今日记忆</div>
                 <div class="ws-sub">每天推送一件藏品的记忆</div>
@@ -964,7 +1123,7 @@ body {
               <div class="web-toggle on" onclick="this.classList.toggle('on')"></div>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">🎂</span>
+              <span class="ws-icon">♦</span>
               <div class="ws-main">
                 <div class="ws-label">周年纪念</div>
                 <div class="ws-sub">藏品入馆周年提醒</div>
@@ -972,7 +1131,7 @@ body {
               <div class="web-toggle on" onclick="this.classList.toggle('on')"></div>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">⏰</span>
+              <span class="ws-icon">◉</span>
               <div class="ws-main">
                 <div class="ws-label">长期未入库提醒</div>
                 <div class="ws-sub">超过 30 天未添加藏品</div>
@@ -983,7 +1142,7 @@ body {
           <div class="settings-panel">
             <div class="settings-panel-title">外观与房间</div>
             <div class="web-settings-row">
-              <span class="ws-icon">🏡</span>
+              <span class="ws-icon">⌂</span>
               <div class="ws-main">
                 <div class="ws-label">房间风格</div>
                 <div class="ws-sub">温暖木质书房</div>
@@ -991,7 +1150,7 @@ body {
               <span class="ws-chevron">›</span>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">🌙</span>
+              <span class="ws-icon">☽</span>
               <div class="ws-main">
                 <div class="ws-label">深色模式</div>
                 <div class="ws-sub">跟随系统设置</div>
@@ -999,7 +1158,7 @@ body {
               <div class="web-toggle" onclick="this.classList.toggle('on')"></div>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">🔤</span>
+              <span class="ws-icon">⁂</span>
               <div class="ws-main">
                 <div class="ws-label">字体大小</div>
               </div>
@@ -1010,7 +1169,7 @@ body {
           <div class="settings-panel">
             <div class="settings-panel-title">数据管理</div>
             <div class="web-settings-row">
-              <span class="ws-icon">📤</span>
+              <span class="ws-icon">↑</span>
               <div class="ws-main">
                 <div class="ws-label">导出数据</div>
                 <div class="ws-sub">导出为 JSON 或图册 PDF</div>
@@ -1018,7 +1177,7 @@ body {
               <span class="ws-chevron">›</span>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">☁️</span>
+              <span class="ws-icon">☁</span>
               <div class="ws-main">
                 <div class="ws-label">云端备份</div>
                 <div class="ws-sub">上次备份：未开启</div>
@@ -1026,7 +1185,7 @@ body {
               <span class="ws-chevron">›</span>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">🗑</span>
+              <span class="ws-icon">✗</span>
               <div class="ws-main">
                 <div class="ws-label ws-danger">清除全部数据</div>
                 <div class="ws-sub">此操作不可撤销</div>
@@ -1037,13 +1196,13 @@ body {
           <div class="settings-panel">
             <div class="settings-panel-title">关于</div>
             <div class="web-settings-row">
-              <span class="ws-icon">ℹ️</span>
+              <span class="ws-icon">ℹ</span>
               <div class="ws-main"><div class="ws-label">关于 Museum</div></div>
-              <span class="ws-value" style="font-size:12px;color:#C4B8AA">v1.0.0</span>
+              <span class="ws-value">v1.0.0</span>
               <span class="ws-chevron">›</span>
             </div>
             <div class="web-settings-row">
-              <span class="ws-icon">📝</span>
+              <span class="ws-icon">✉</span>
               <div class="ws-main"><div class="ws-label">使用反馈</div></div>
               <span class="ws-chevron">›</span>
             </div>
@@ -1060,23 +1219,27 @@ function showPage(n) {
   document.querySelectorAll('.page').forEach(p => {
     p.classList.remove('active');
     p.style.display = 'none';
+    p.style.opacity = '0';
   });
   document.querySelectorAll('.sidebar-nav-item').forEach(i => i.classList.remove('active'));
 
   const target = document.getElementById('page-' + n);
   target.style.display = 'flex';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => { target.classList.add('active'); });
+    requestAnimationFrame(() => {
+      target.classList.add('active');
+      target.style.opacity = '1';
+    });
   });
-
   const navEl = document.getElementById('nav-' + n);
   if (navEl) navEl.classList.add('active');
 }
 
 // Init
-document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+document.querySelectorAll('.page').forEach(p => { p.style.display = 'none'; p.style.opacity = '0'; });
 document.getElementById('page-1').style.display = 'flex';
 document.getElementById('page-1').classList.add('active');
+document.getElementById('page-1').style.opacity = '1';
 </script>
 </body>
 </html>
