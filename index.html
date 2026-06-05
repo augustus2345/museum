@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>拾光匣 · 收藏每一件值得记住的小事</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ============== TOP BAR ============== -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="#">
+        <span class="brand__logo">拾</span>
+        <span class="brand__text">
+          <span class="brand__name">拾光匣</span>
+          <span class="brand__tag">Cabinet</span>
+        </span>
+      </a>
+
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input type="text" placeholder="搜索藏品、日期、地点…" />
+        <span class="search__kbd">⌘ K</span>
+      </div>
+
+      <div class="actions">
+        <button class="iconbtn" aria-label="通知">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+            <path d="M10 21a2 2 0 0 0 4 0" />
+          </svg>
+          <span class="iconbtn__dot"></span>
+        </button>
+        <button class="avatar" aria-label="账号">L</button>
+      </div>
+    </div>
+
+    <!-- Tab nav -->
+    <nav class="tabs">
+      <div class="tabs__inner">
+        <button class="tab is-active" data-view="archive">
+          <span class="tab__no">01</span>
+          <span class="tab__label">陈列</span>
+          <span class="tab__count">12</span>
+        </button>
+        <button class="tab" data-view="timeline">
+          <span class="tab__no">02</span>
+          <span class="tab__label">时间线</span>
+        </button>
+        <button class="tab" data-view="add">
+          <span class="tab__no">03</span>
+          <span class="tab__label">收藏</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============== ARCHIVE VIEW ============== -->
+  <main class="view view--archive is-active" data-view="archive">
+    <!-- Sub-header with filters -->
+    <section class="subhead">
+      <div class="subhead__inner">
+        <div class="subhead__left">
+          <h1 class="page-title">我的陈列</h1>
+          <p class="page-sub" id="totalCount">12 件 · 全部</p>
+        </div>
+        <div class="subhead__right">
+          <button class="btn-primary" data-jump="add">
+            <span>＋</span> 添加藏品
+          </button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="chips" id="chips">
+          <button class="chip is-active" data-filter="all">全部 <em>12</em></button>
+          <button class="chip" data-filter="ticket">票根 <em>4</em></button>
+          <button class="chip" data-filter="figure">手办 <em>2</em></button>
+          <button class="chip" data-filter="concert">演出 <em>3</em></button>
+          <button class="chip" data-filter="photo">照片 <em>2</em></button>
+          <button class="chip" data-filter="note">手写 <em>1</em></button>
+        </div>
+        <div class="toolbar__right">
+          <div class="view-toggle">
+            <button class="vbtn is-active" data-grid="3" aria-label="三列">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <rect x="0" y="0" width="4" height="16" rx="1"/>
+                <rect x="6" y="0" width="4" height="16" rx="1"/>
+                <rect x="12" y="0" width="4" height="16" rx="1"/>
+              </svg>
+            </button>
+            <button class="vbtn" data-grid="4" aria-label="四列">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <rect x="0" y="0" width="3" height="16" rx="1"/>
+                <rect x="4.25" y="0" width="3" height="16" rx="1"/>
+                <rect x="8.5" y="0" width="3" height="16" rx="1"/>
+                <rect x="12.75" y="0" width="3" height="16" rx="1"/>
+              </svg>
+            </button>
+            <button class="vbtn" data-grid="2" aria-label="两列">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <rect x="0" y="0" width="7" height="16" rx="1"/>
+                <rect x="9" y="0" width="7" height="16" rx="1"/>
+              </svg>
+            </button>
+          </div>
+          <select class="select" id="sortSelect">
+            <option value="date-desc">最新收藏</option>
+            <option value="date-asc">时间正序</option>
+            <option value="emotion">心动程度</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <section class="grid" id="archiveGrid"></section>
+  </main>
+
+  <!-- ============== TIMELINE VIEW ============== -->
+  <main class="view view--timeline" data-view="timeline">
+    <section class="subhead">
+      <div class="subhead__inner">
+        <div class="subhead__left">
+          <h1 class="page-title">时间线</h1>
+          <p class="page-sub">按收藏时间从近到远</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline" id="timeline"></section>
+  </main>
+
+  <!-- ============== ADD VIEW ============== -->
+  <main class="view view--add" data-view="add">
+    <section class="subhead">
+      <div class="subhead__inner">
+        <div class="subhead__left">
+          <h1 class="page-title">收藏一件新事</h1>
+          <p class="page-sub">为它起个名字，留一段心情</p>
+        </div>
+      </div>
+    </section>
+
+    <form class="form" id="addForm" autocomplete="off">
+      <div class="form-grid">
+        <div class="form-left">
+          <div class="field">
+            <label class="field__label">藏品名称</label>
+            <input class="field__input field__input--lg" type="text" placeholder="如：第一次看演唱会的票根" required />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label">收藏日期</label>
+              <input class="field__input" type="text" placeholder="2024 / 08 / 17" />
+            </div>
+            <div class="field">
+              <label class="field__label">地点</label>
+              <input class="field__input" type="text" placeholder="上海 · 梅赛德斯奔驰中心" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">类别</label>
+            <div class="pills">
+              <label class="pill"><input type="radio" name="kind" value="ticket" checked /><span>票根</span></label>
+              <label class="pill"><input type="radio" name="kind" value="figure" /><span>手办</span></label>
+              <label class="pill"><input type="radio" name="kind" value="concert" /><span>演出</span></label>
+              <label class="pill"><input type="radio" name="kind" value="photo" /><span>照片</span></label>
+              <label class="pill"><input type="radio" name="kind" value="note" /><span>手写</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">描述 · 此刻的心情</label>
+            <textarea class="field__input field__textarea" rows="6" placeholder="写下与它相遇时的故事……"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="field__label">手记 · 可选</label>
+            <input class="field__input" type="text" placeholder="一句话，最打动你的部分" />
+          </div>
+        </div>
+
+        <div class="form-right">
+          <label class="field__label">照片 · 可多张</label>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" multiple accept="image/*" hidden />
+            <div class="dropzone__inner">
+              <span class="dropzone__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="m17 8-5-5-5 5" />
+                  <path d="M12 3v12" />
+                </svg>
+              </span>
+              <span class="dropzone__text">拖拽或点击上传</span>
+              <span class="dropzone__hint">支持 JPG · PNG · HEIC</span>
+            </div>
+            <div class="dropzone__previews" id="previews"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-ghost">存为草稿</button>
+        <button type="submit" class="btn-primary">保存到匣子</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- ============== DETAIL ============== -->
+  <div class="detail" id="modal" aria-hidden="true">
+    <div class="detail__bar">
+      <button class="detail__back" data-close>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span>返回</span>
+      </button>
+      <div class="detail__bar-right">
+        <button class="iconbtn-sm" aria-label="编辑">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z" />
+          </svg>
+        </button>
+        <button class="iconbtn-sm" aria-label="分享">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <path d="M16 6l-4-4-4 4" />
+            <path d="M12 2v13" />
+          </svg>
+        </button>
+        <button class="iconbtn-sm" aria-label="更多">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <circle cx="5" cy="12" r="1.6"/>
+            <circle cx="12" cy="12" r="1.6"/>
+            <circle cx="19" cy="12" r="1.6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="detail__body" id="modalContent"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
